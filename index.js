@@ -18,32 +18,23 @@ var recOptions = {
 // from a RecordRTC instance that gets passed in.
 // calls `cb` on each binary blob of video
 // whenever one becomes available.
-function startRecordingChunks (recordRTC, duration, cb) {
+function startRecordingChunks (stream, duration, cb) {
+    var rrtc = RecordRTC(stream, recOptions)
     // start it recording
-    recordRTC
-        .startRecording()
+    rrtc.startRecording()
         .setRecordingDuration(duration)
         // when it stops,
         .onRecordingStopped(videoURL => {
-            // post the video data
-            var blob = recordRTC.getBlob()
-            cb(blob)
+            // call cb on the video blob
+            cb(rrtc.getBlob())
             // start recording again
-            startRecordingChunks(recordRTC, duration, cb)
+            startRecordingChunks(stream, duration, cb)
         })
-}
-
-function stopRecordingChunks (recordRTC) {
-    // make sure no more data will be uploaded
-    recordRTC.onRecordingStopped(null)
-    // stop recording
-    recordRTC.stopRecording()
 }
 
 
 function setup (webcam_stream, clip_duration, url) {
 
-    var rrtc = RecordRTC(webcam_stream, recOptions)
 
     var conn = new EventEmitter()
 
@@ -51,19 +42,17 @@ function setup (webcam_stream, clip_duration, url) {
 
     // sends a 'video' event
     // with some binary blob
-    function _send (blob) {
+    function send (blob) {
         socket.emit('video', blob)
-    }
-
-    // we expose a fn to stop recording
-    function stop () {
-        stopRecordingChunks(rrtc)
     }
 
     // and a fn to start recording
     function start() {
-        startRecordingChunks(rrtc, clip_duration, send_data)
+        startRecordingChunks(webcam_stream, clip_duration, send)
     }
+
+    // start recording chunks right away
+    start()
 
     // the returned object has the connection
     // and methods to start and stop sending webcam data over the wire
@@ -71,7 +60,7 @@ function setup (webcam_stream, clip_duration, url) {
 
         socket: socket,
 
-        stop: stop,
+        //stop: stop, // TODO stop fn
 
         start: start,
     }

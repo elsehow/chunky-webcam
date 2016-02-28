@@ -8,9 +8,9 @@ io.on('connection', (socket) => {
     console.log('got a socket.io client connection!')
     // when we get a 'video' event, it contains a binary blob `blob`
     socket.on('video', blob => {
-        console.log('i see a video blob!!')
+        console.log('i see a video blob!!', blob)
         // emit a response 'data' to the client
-        socket.emit('data', 'got your video blob!!!')
+        socket.emit('data', `${Date.now()} - got your video blob!!!`)
     })
 })
 

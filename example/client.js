@@ -1,13 +1,14 @@
 var chunky = require('../index.js')
-  , getUserMedia = require('getusermedia')
+  , getUserMedia = require('get-user-media')
   , attachMediaStream = require('attachmediastream')
   // element in which we show video
   , video_el = document.getElementById('my-video')
   // element in which we show server messages
   , msg_el = document.getElementById('server-messages')
 
-// get user media 
-getUserMedia((err, stream) => {
+// get user webcam
+getUserMedia({ video: true, audio: false}, (err, stream) => {
+
     // if the browser doesn't support user media 
     // or the user says "no" the error gets passed 
     // as the first argument. 
@@ -19,17 +20,23 @@ getUserMedia((err, stream) => {
 
     // put the webcam stream in a video element
     attachMediaStream(stream,video_el, {
-        muted: true
+        muted: true,
+        mirror: true,
     })
 
-    // setup chunky-webcam, with 1000ms duration
-    // on 'localhost:9999', where our server runs
+    // setup chunky-webcam, with our stream
+    // it will record 1000ms chunks,
+    // and send them with a 'video' event to 'localhost:9999'
+    // where our server runs
     chunk = chunky(stream, 1000, 'localhost:9999')
 
-    console.log(chunk)
+    console.log('chunky-webcam', chunk)
 
     // our server will send 'data' events
-    // TODO we will add them to our msg element
-    chunk.socket.on('data', data => console.log(data))
-
+    chunk.socket.on('data', data => {
+        // we will add them to our msg element
+        var d = document.createTextNode(JSON.stringify(data) + '\n')
+        msg_el.appendChild(d)
+        
+    })
 })
