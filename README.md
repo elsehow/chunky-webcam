@@ -41,7 +41,7 @@ note that recording startsk
 
 ### chunk.socket
 
-the underlying websocket connection.
+the underlying socket.io connection.
 
 use this to, for example, subscribe to events coming from your socket.io server.
 or to emit other kinds of events to this server.

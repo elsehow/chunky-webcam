@@ -1,9 +1,8 @@
 {
-  "name": "chunky-webcam"
+  "name": "chunky-webcam",
   "version": "0.0.1",
   "description": "browser client for streaming facial emotions api",
   "main": "index.js",
-  "scripts": {},
   "author": "elsehow",
   "license": "BSD-2-Clause",
   "dependencies": {

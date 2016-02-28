@@ -29,13 +29,13 @@ function startRecordingChunks (recordRTC, duration, cb) {
             var blob = recordRTC.getBlob()
             cb(blob)
             // start recording again
-            recordASec(err, stream)
+            startRecordingChunks(recordRTC, duration, cb)
         })
 }
 
 function stopRecordingChunks (recordRTC) {
     // make sure no more data will be uploaded
-    recordRTC.onRecordingStopped(_ => return)
+    recordRTC.onRecordingStopped(null)
     // stop recording
     recordRTC.stopRecording()
 }
@@ -43,7 +43,7 @@ function stopRecordingChunks (recordRTC) {
 
 function setup (webcam_stream, clip_duration, url) {
 
-    var rrtc = RecordRTC(stream, recOptions)
+    var rrtc = RecordRTC(webcam_stream, recOptions)
 
     var conn = new EventEmitter()
 

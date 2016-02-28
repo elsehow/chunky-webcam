@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "start": "node server.js",
+    "watch": "watchify client.js -o bundle.js"
+  },
+  "author": "elsehow",
+  "license": "BSD",
+  "dependencies": {
+    "attachmediastream": "^1.3.5",
+    "ecstatic": "^1.4.0",
+    "getusermedia": "^1.3.5",
+    "socket.io": "^1.4.5",
+    "watchify": "^3.7.0"
+  }
+}
