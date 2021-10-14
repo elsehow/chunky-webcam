@@ -21,8 +21,7 @@ var recOptions = {
 function startRecordingChunks (stream, duration, cb) {
     var rrtc = RecordRTC(stream, recOptions)
     // start it recording
-    rrtc.startRecording()
-        .setRecordingDuration(duration)
+    rrtc.setRecordingDuration(duration)
         // when it stops,
         .onRecordingStopped(videoURL => {
             // call cb on the video blob
@@ -30,6 +29,8 @@ function startRecordingChunks (stream, duration, cb) {
             // start recording again
             startRecordingChunks(stream, duration, cb)
         })
+    // using pattern from https://www.webrtc-experiment.com/RecordRTC/simple-demos/setRecordingDuration.html
+    rrtc.startRecording()
 }
 
 
